@@ -31,7 +31,7 @@ else
     json=$(curl -fsSL "http://services.sonarr.tv/v1/releases" | jq '.["v2-stable"]')
     version=$(jq -r '.version' <<< "${json}")
     [[ -z ${version} ]] && exit 1
-    branch=$(jq -r '.branch' <<< "${json}")
-    [[ -z ${branch} ]] && exit 1
-    echo '{"version":"'"${version}"'","branch":"'"${branch}"'"}' | jq . > VERSION.json
+    sbranch=$(jq -r '.branch' <<< "${json}")
+    [[ -z ${sbranch} ]] && exit 1
+    echo '{"version":"'"${version}"'","sbranch":"'"${sbranch}"'"}' | jq . > VERSION.json
 fi

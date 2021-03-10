@@ -1,8 +1,26 @@
-FROM hotio/mono@sha256:f1fd6051b8244eb35da980e8dd53e1d1a8c32abe158da7e3c8c07ca7d64a635d
+FROM ghcr.io/hotio/base@sha256:66de12adcb252113162d5af70091e7853517ae9d3034678dd851c06ffb849760
 
 ARG DEBIAN_FRONTEND="noninteractive"
 
 EXPOSE 8989
+
+# https://download.mono-project.com/repo/ubuntu/dists/bionic/snapshots/
+ARG MONO_VERSION=5.20.1.34
+
+# install packages
+RUN apt update && \
+    apt install -y --no-install-recommends --no-install-suggests \
+        gnupg && \
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && echo "deb https://download.mono-project.com/repo/ubuntu bionic/snapshots/${MONO_VERSION} main" | tee /etc/apt/sources.list.d/mono-official.list && \
+    apt update && \
+    apt install -y --no-install-recommends --no-install-suggests \
+        mono-complete \
+        libmediainfo0v5 && \
+# clean up
+    apt purge -y gnupg && \
+    apt autoremove -y && \
+    apt clean && \
+    rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
 ARG VERSION
 ARG SBRANCH
